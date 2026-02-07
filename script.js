@@ -105,7 +105,12 @@ function updateCartDisplay() {
     let html = '';
     let total = 0;
     cart.forEach(item => {
-        html += `<p>${item.name} x ${item.qty} = ${item.price * item.qty} RON</p>`;
+        html += `
+            <div class="cart-item">
+                ${item.name} x ${item.qty} = ${item.price * item.qty} RON
+                <span class="remove-item" onclick="removeItemFromCart('${item.name}')">×</span>
+            </div>
+        `;
         total += item.price * item.qty;
     });
     panel.innerHTML = html;
@@ -145,66 +150,22 @@ function removeItemFromCart(name) {
 // =====================
 // ORDER GOMB A KOSÁRBAN
 // =====================
-function openOrderFromCart() {
-    if(cart.length === 0){
-        alert("A kosarad üres!");
-        return;
-    }
-    openOrderModal("", null);
-}
-
-// =====================
-// OLDALSÓ MENÜ – NYÍL MINDIG LÁTSZIK, TOGGLE
-// =====================
 window.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.createElement('div');
     sidebar.id = 'sidebar';
-    sidebar.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 220px;
-        background: #020617;
-        color: #e5e7eb;
-        padding: 2rem;
-        display: block;
-        z-index: 999;
-        overflow-y: auto;
-        transition: all 0.3s ease;
-    `;
-
     sidebar.innerHTML = `
         <h3>Menü</h3>
         <ul style="list-style:none; padding:0;">
-            <li><a href="#szolgaltatasok" style="color:#38bdf8; text-decoration:none;">Szolgáltatások</a></li>
-            <li><a href="#cart-panel" style="color:#38bdf8; text-decoration:none;">Kosár</a></li>
+            <li><a href="#szolgaltatasok" class="scroll-link">Szolgáltatások</a></li>
+            <li><a href="#cart-panel">Kosár</a></li>
         </ul>
     `;
     document.body.appendChild(sidebar);
 
-    // Nyíl gomb
     const toggleArrow = document.createElement('div');
     toggleArrow.id = 'toggleArrow';
-    toggleArrow.innerHTML = '→';
-    toggleArrow.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 230px;
-        background:#3b82f6;
-        color:white;
-        border-radius:50%;
-        width:30px;
-        height:30px;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        cursor:pointer;
-        z-index:1000;
-        font-weight:bold;
-        font-size:1.2rem;
-        transition: left 0.3s ease;
-    `;
+    toggleArrow.innerHTML = '←';
+    document.body.appendChild(toggleArrow);
 
     let sidebarOpen = true;
 
@@ -212,36 +173,37 @@ window.addEventListener('DOMContentLoaded', () => {
         sidebarOpen = !sidebarOpen;
 
         if (sidebarOpen) {
-            sidebar.style.left = '220px';
-            toggleArrow.style.left = '230px';
-            toggleArrow.innerHTML = '→';
+            sidebar.style.left = '0px';
+            toggleArrow.style.left = '220px';
+            toggleArrow.innerHTML = '←';
+            toggleArrow.style.transform = 'rotate(0deg)';
         } else {
             sidebar.style.left = '-220px';
             toggleArrow.style.left = '0px';
-            toggleArrow.innerHTML = '←';
+            toggleArrow.innerHTML = '→';
+            toggleArrow.style.transform = 'rotate(180deg)';
         }
     });
+
+    // 👇 SZÉP LEFELÉ GÖRGÉS
+    document.querySelectorAll('.scroll-link').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const target = document.querySelector(link.getAttribute('href'));
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // opcionális: menü becsukása kattintás után
+            sidebarOpen = false;
+            sidebar.style.left = '-220px';
+            toggleArrow.style.left = '0px';
+            toggleArrow.innerHTML = '→';
+            toggleArrow.style.transform = 'rotate(180deg)';
+        });
+    });
 });
-
-// =====================
-// MENU FIX (NINCS STÍLUS)
-// =====================
-let sidebarOpen = true;
-
-const menuFix = setInterval(() => {
-    const sidebar = document.getElementById("sidebar");
-    const toggleArrow = document.getElementById("toggleArrow");
-
-    if (sidebar && toggleArrow) {
-        clearInterval(menuFix);
-
-        toggleArrow.onclick = () => {
-            sidebarOpen = !sidebarOpen;
-            sidebar.style.width = sidebarOpen ? "220px" : "0px";
-            toggleArrow.style.left = sidebarOpen ? "220px" : "0px";
-        };
-    }
-}, 50);
 
 // =====================
 // PROFILE STORAGE
