@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DU3L2 – Házkörüli munkák</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="hero">
+        <h1>DU3L2</h1>
+        <h2>Házkörüli munkák – házhoz megyünk</h2>
+        <p>Megbízható segítség a ház és a kert körül.</p>
+        <a href="#szolgaltatasok" class="btn">Szolgáltatások</a>
+    </div>
+</header>
+
+<section id="szolgaltatasok">
+    <h2>Szolgáltatásaink</h2>
+    <div class="services">
+        <div class="card clickable">
+            <h3>🔧 Szerelés</h3>
+            <p>Kattints az árak megtekintéséhez.</p>
+            <button class="btn-order" onclick="openModal('szereles')">Info</button>
+            <button class="btn-order" onclick="addToCart('Szerelés', 250)">Kosárba</button>
+        </div>
+
+        <div class="card clickable">
+            <h3>🌿 Kerti munkák</h3>
+            <p>Kattints az árak megtekintéséhez.</p>
+            <button class="btn-order" onclick="openModal('kert')">Info</button>
+            <button class="btn-order" onclick="addToCart('Kerti munkák', 200)">Kosárba</button>
+        </div>
+
+        <div class="card clickable">
+            <h3>🧱 Karbantartás</h3>
+            <p>Kattints az árak megtekintéséhez.</p>
+            <button class="btn-order" onclick="openModal('karbantartas')">Info</button>
+            <button class="btn-order" onclick="addToCart('Karbantartás', 150)">Kosárba</button>
+        </div>
+
+        <div class="card clickable">
+            <h3>🚗 Házhoz megyünk</h3>
+            <p>Kattints, hogy lásd a kiszállási területet.</p>
+            <button class="btn-order" onclick="openModal('terulet')">Info</button>
+        </div>
+    </div>
+</section>
+
+<footer>
+    © 2026 DU3L2 • Minden jog fenntartva
+</footer>
+
+<!-- INFO MODAL -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">×</span>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div id="order-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeOrderModal()">×</span>
+        <h2>📝 Megrendelés</h2>
+        <form id="orderForm" onsubmit="submitOrder(event)">
+            <label for="name">Név*</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone">Telefonszám*</label>
+            <input type="text" id="phone" name="phone" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+
+            <label for="city">Település*</label>
+            <select id="city" name="city" required>
+                <option value="">Válassz települést</option>
+                <option value="Marosvásárhely">Marosvásárhely</option>
+                <option value="Szeklerudvarhely">Szeklerudvarhely</option>
+                <option value="Közeli települések">Közeli települések</option>
+            </select>
+
+            <label for="service">Szolgáltatás*</label>
+            <input type="text" id="service" name="service" readonly>
+
+            <label for="details">Megjegyzés</label>
+            <textarea id="details" name="details" rows="3"></textarea>
+
+            <button type="submit" class="btn">Küldés</button>
+        </form>
+    </div>
+</div>
+
+<!-- KOSÁR LEBEGŐ IKON -->
+<div id="cart-icon" onclick="toggleCart()">
+    🛒 <span id="cart-count">0</span>
+</div>
+<div id="cart-panel" class="cart-panel">
+    <h3>🛒 Kosár</h3>
+    <div id="cart-items"></div>
+    <p id="cart-total"></p>
+    <button class="btn" onclick="openOrderFromCart()">Rendelés</button>
+</div>
+
+<!-- LOGIN MODAL (UGYANAZ A STÍLUS) -->
+<div id="login-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeLogin()">×</span>
+        <h2>Bejelentkezés</h2>
+
+        <label>Név</label>
+        <input type="text" id="login-name">
+
+        <label>Email</label>
+        <input type="email" id="login-email">
+
+        <label>Telefonszám</label>
+        <input type="text" id="login-phone">
+
+        <label>Település</label>
+        <input type="text" id="login-city">
+
+        <button class="btn" onclick="doLogin()">Belépés</button>
+    </div>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
