@@ -262,7 +262,7 @@ footer {
 #toggleArrow {
     position: fixed;
     top: 20px;
-    left: 220px; /* sidebar szélessége */
+    left: 220px;
     background: #3b82f6;
     color: white;
     border-radius: 50%;
@@ -275,5 +275,42 @@ footer {
     z-index: 1000;
     font-weight: bold;
     font-size: 1.2rem;
-    transition: left 0.3s ease;
+    transition:
+        left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.3s ease;
+}
+
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    background: #020617;
+    color: #e5e7eb;
+    padding: 2rem;
+    z-index: 999;
+    transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cart-item {
+    position: relative;
+    padding-right: 20px; /* hely az x-nek */
+    margin-bottom: 5px;
+}
+
+.remove-item {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.cart-item:hover .remove-item {
+    display: inline;
 }
