@@ -1,323 +1,316 @@
-// =====================
-// INFO MODAL
-// =====================
-function openModal(type) {
-    const modal = document.getElementById("modal");
-    const body = document.getElementById("modal-body");
-
-    if (type === "terulet") {
-        body.innerHTML = `<h2>🚗 Kiszállási terület</h2>
-        <p>A DU3L2 jelenleg <strong>csak Maros megye</strong> területén vállal kiszállást.</p>
-        <p>Elsősorban Marosvásárhely, Szeklerudvarhely és közeli települések.</p>`;
-    }
-
-    if (type === "karbantartas") {
-        body.innerHTML = `<h2>🛠 Karbantartási árak</h2>
-        <div class="price-list">
-            <p><span>Fal javítás</span><strong>150–300 RON</strong></p>
-            <p><span>TV / polc szerelés</span><strong>180–350 RON</strong></p>
-            <p><span>Lámpa csere</span><strong>100–250 RON</strong></p>
-        </div>`;
-    }
-
-    if (type === "szereles") {
-        body.innerHTML = `<h2>🔧 Szerelési árak</h2>
-        <div class="price-list">
-            <p><span>Polc felszerelés</span><strong>60–150 RON</strong></p>
-            <p><span>TV tartó falra</span><strong>180–350 RON</strong></p>
-        </div>`;
-    }
-
-    if (type === "kert") {
-        body.innerHTML = `<h2>🌿 Kerti munkák árak</h2>
-        <div class="price-list">
-            <p><span>Fűnyírás</span><strong>100–200 RON</strong></p>
-            <p><span>Sövénynyírás</span><strong>150–300 RON</strong></p>
-        </div>`;
-    }
-
-    modal.style.display = "flex";
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
-function closeModal() {
-    document.getElementById("modal").style.display = "none";
+body {
+    background: #0f172a;
+    color: #e5e7eb;
+    line-height: 1.6;
 }
 
-// =====================
-// ORDER MODAL
-// =====================
-function openOrderModal(serviceName, event) {
-    if(event) event.stopPropagation();
-    document.getElementById("order-modal").style.display = "flex";
-    document.getElementById("service").value = serviceName;
+header {
+    min-height: 80vh;
+    background: linear-gradient(135deg,#2563eb,#020617);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
 }
 
-function closeOrderModal() {
-    document.getElementById("order-modal").style.display = "none";
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: 3px;
 }
 
-function submitOrder(event) {
-    event.preventDefault();
-
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
-    const city = document.getElementById("city").value;
-    const service = document.getElementById("service").value;
-    const details = document.getElementById("details").value;
-
-    if(!name || !phone || !city) {
-        alert("Kérlek töltsd ki a kötelező mezőket!");
-        return;
-    }
-
-    let cartText = cart.map(item => `${item.name} x ${item.qty}`).join("\n");
-
-    const mailtoLink = `mailto:berivenciyes@gmail.com?subject=Új rendelés&body=Név: ${name}\nEmail: ${email}\nTelefonszám: ${phone}\nTelepülés: ${city}\nSzolgáltatás: ${service}\nMegjegyzés: ${details}\nKosár tartalma:\n${cartText}`;
-
-    window.location.href = mailtoLink;
-    closeOrderModal();
+.hero h2 {
+    font-size: 1.6rem;
+    margin: 1rem 0;
+    color: #38bdf8;
 }
 
-// =====================
-// KOSÁR LOGIKA
-// =====================
-let cart = [];
-
-function addToCart(name, price) {
-    const found = cart.find(item => item.name === name);
-    if(found) found.qty++;
-    else cart.push({name, price, qty: 1});
-    updateCartDisplay();
-    updateCartIcon();
+.hero p {
+    max-width: 600px;
+    margin: auto;
+    font-size: 1.1rem;
 }
 
-function updateCartDisplay() {
-    const panel = document.getElementById("cart-items");
-    const totalEl = document.getElementById("cart-total");
-
-    if(cart.length === 0){
-        panel.innerHTML = "<p>A kosarad üres.</p>";
-        totalEl.textContent = "";
-        return;
-    }
-
-    let html = '';
-    let total = 0;
-    cart.forEach(item => {
-        html += `
-            <div class="cart-item">
-                ${item.name} x ${item.qty} = ${item.price * item.qty} RON
-                <span class="remove-item" onclick="removeItemFromCart('${item.name}')">×</span>
-            </div>
-        `;
-        total += item.price * item.qty;
-    });
-    panel.innerHTML = html;
-    totalEl.innerHTML = `<strong>Összesen: ${total} RON</strong>`;
+.btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 1rem 2.2rem;
+    background: #22c55e;
+    color: #022c22;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: 0.3s;
 }
 
-function toggleCart() {
-    const panel = document.getElementById("cart-panel");
-    if(panel.style.display === "block") panel.style.display = "none";
-    else panel.style.display = "block";
+.btn:hover {
+    background: #16a34a;
+    transform: scale(1.05);
 }
 
-function updateCartIcon() {
-    const count = cart.reduce((sum, item) => sum + item.qty, 0);
-    document.getElementById("cart-count").textContent = count;
+section {
+    padding: 4rem 2rem;
+    max-width: 1100px;
+    margin: auto;
 }
 
-function removeOneFromCart(name) {
-    const item = cart.find(i => i.name === name);
-    if(!item) return;
-
-    item.qty--;
-    if(item.qty <= 0) {
-        cart = cart.filter(i => i.name !== name);
-    }
-
-    updateCartDisplay();
-    updateCartIcon();
+section h2 {
+    text-align: center;
+    font-size: 2.3rem;
+    margin-bottom: 3rem;
 }
 
-function removeItemFromCart(name) {
-    cart = cart.filter(i => i.name !== name);
-    updateCartDisplay();
-    updateCartIcon();
+.services {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 1.5rem;
 }
 
-// =====================
-// ORDER GOMB A KOSÁRBAN
-// =====================
-window.addEventListener('DOMContentLoaded', () => {
-    const sidebar = document.createElement('div');
-    sidebar.id = 'sidebar';
-    sidebar.innerHTML = `
-        <h3>Menü</h3>
-        <ul style="list-style:none; padding:0;">
-            <li><a href="#szolgaltatasok" class="scroll-link">Szolgáltatások</a></li>
-            <li><a href="#cart-panel">Kosár</a></li>
-        </ul>
-    `;
-    document.body.appendChild(sidebar);
-
-    const toggleArrow = document.createElement('div');
-    toggleArrow.id = 'toggleArrow';
-    toggleArrow.innerHTML = '←';
-    document.body.appendChild(toggleArrow);
-
-    let sidebarOpen = true;
-
-    toggleArrow.addEventListener('click', () => {
-        sidebarOpen = !sidebarOpen;
-
-        if (sidebarOpen) {
-            sidebar.style.left = '0px';
-            toggleArrow.style.left = '220px';
-            toggleArrow.innerHTML = '←';
-            toggleArrow.style.transform = 'rotate(0deg)';
-        } else {
-            sidebar.style.left = '-220px';
-            toggleArrow.style.left = '0px';
-            toggleArrow.innerHTML = '→';
-            toggleArrow.style.transform = 'rotate(180deg)';
-        }
-    });
-
-    // 👇 SZÉP LEFELÉ GÖRGÉS
-    document.querySelectorAll('.scroll-link').forEach(link => {
-        link.addEventListener('click', e => {
-            e.preventDefault();
-            const target = document.querySelector(link.getAttribute('href'));
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-
-            // opcionális: menü becsukása kattintás után
-            sidebarOpen = false;
-            sidebar.style.left = '-220px';
-            toggleArrow.style.left = '0px';
-            toggleArrow.innerHTML = '→';
-            toggleArrow.style.transform = 'rotate(180deg)';
-        });
-    });
-});
-
-// =====================
-// PROFILE STORAGE
-// =====================
-function saveProfile(profile) {
-    localStorage.setItem("profile", JSON.stringify(profile));
+.card {
+    background: #020617;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    transition: 0.3s;
+    position: relative;
 }
 
-function loadProfile() {
-    const data = localStorage.getItem("profile");
-    return data ? JSON.parse(data) : null;
+.card:hover {
+    transform: translateY(-10px);
 }
 
-function deleteProfile() {
-    localStorage.removeItem("profile");
-    cart = [];
-    updateCartDisplay();
-    updateCartIcon();
-    updateUI();
+.card h3 {
+    margin-bottom: 1rem;
+    color: #38bdf8;
 }
 
-// =====================
-// LOGIN
-// =====================
-function openLogin() {
-    document.getElementById("login-modal").style.display = "flex";
+.clickable {
+    cursor: pointer;
 }
 
-function closeLogin() {
-    document.getElementById("login-modal").style.display = "none";
+.btn-order {
+    display: block;
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-function doLogin() {
-    const profile = {
-        name: document.getElementById("login-name").value,
-        email: document.getElementById("login-email").value,
-        phone: document.getElementById("login-phone").value,
-        city: document.getElementById("login-city").value,
-        orders: []
-    };
-
-    saveProfile(profile);
-    closeLogin();
-    updateUI();
+.btn-order:hover {
+    background: #2563eb;
 }
 
-// =====================
-// ORDER → PROFILE
-// =====================
-function addOrderToProfile(order) {
-    const profile = loadProfile();
-    if (!profile) return;
-
-    profile.orders.push(order);
-    saveProfile(profile);
+form label {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
 }
 
-// =====================
-// UI UPDATE (NO STYLE)
-// =====================
-function updateUI() {
-    const sidebar = document.getElementById("sidebar");
-    if (!sidebar) return;
-
-    let header = document.getElementById("profile-header");
-    if (!header) {
-        header = document.createElement("div");
-        header.id = "profile-header";
-        sidebar.prepend(header);
-    }
-
-    const profile = loadProfile();
-
-    if (profile) {
-        header.innerHTML = `
-            <p>Szia, ${profile.name}</p>
-            <button class="btn-order" onclick="deleteProfile()">Kijelentkezés</button>
-        `;
-    } else {
-        header.innerHTML = `
-            <p>Vendég</p>
-            <button class="btn-order" onclick="openLogin()">Bejelentkezés</button>
-        `;
-    }
+form input, form select, form textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #e5e7eb;
+    font-size: 1rem;
 }
 
-document.addEventListener("DOMContentLoaded", updateUI);
+form textarea {
+    resize: none;
+}
 
-// =====================
-// SUBMIT ORDER HOOK
-// =====================
-const _submitOrder = submitOrder;
-submitOrder = function(event) {
-    event.preventDefault();
+form button.btn {
+    margin-top: 1.5rem;
+    width: 100%;
+}
 
-    const city = document.getElementById("city").value;
-    const details = document.getElementById("details").value;
+footer {
+    background: #020617;
+    text-align: center;
+    padding: 2rem;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
 
-    let profile = loadProfile();
-    if (!profile) {
-        openLogin();
-        return;
-    }
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
 
-    addOrderToProfile({
-        date: new Date().toLocaleString(),
-        items: [...cart],
-        city,
-        note: details
-    });
+.modal-content {
+    background: #020617;
+    padding: 2.5rem;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    color: #e5e7eb;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    position: relative;
+    animation: pop 0.3s ease;
+}
 
-    cart = [];
-    updateCartDisplay();
-    updateCartIcon();
+@keyframes pop {
+    from {transform: scale(0.9); opacity:0;}
+    to {transform: scale(1); opacity:1;}
+}
 
-    _submitOrder(event);
-};
+.close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.close:hover {
+    color: #fff;
+}
+
+.price-list p {
+    margin: 0.6rem 0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 0.4rem;
+}
+
+#cart-icon {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: #3b82f6;
+    color: #fff;
+    padding: 0.8rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease;
+}
+
+#cart-icon:hover {
+    transform: scale(1.1);
+}
+
+#cart-count {
+    background: #f87171;
+    padding: 0 0.5rem;
+    border-radius: 50%;
+    font-size: 0.9rem;
+}
+
+.cart-panel {
+    position: fixed;
+    right: 20px;
+    bottom: 70px;
+    width: 300px;
+    max-height: 400px;
+    background: #020617;
+    color: #e5e7eb;
+    border-radius: 20px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    overflow-y: auto;
+    display: none;
+    z-index: 999;
+}
+
+.cart-panel h3 {
+    margin-bottom: 1rem;
+    color: #38bdf8;
+}
+
+.cart-panel p {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 0.4rem;
+    margin: 0.4rem 0;
+}
+
+.cart-panel .btn {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+#toggleArrow {
+    position: fixed;
+    top: 20px;
+    left: 220px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition:
+        left 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.3s ease;
+}
+
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    background: #020617;
+    color: #e5e7eb;
+    padding: 2rem;
+    z-index: 999;
+    transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cart-item {
+    position: relative;
+    padding-right: 20px; /* hely az x-nek */
+    margin-bottom: 5px;
+}
+
+.remove-item {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.cart-item:hover .remove-item {
+    display: inline;
+}
